@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f6d8ea">
+<title>A Special Day Is Coming</title>
+<style>
+:root{
+  --ink:#2d376e; --pink:#f49bc2; --lav:#b8a4f3; --glass:rgba(255,245,252,.62);
+  --glass2:rgba(255,240,250,.78); --line:rgba(255,255,255,.82);
+  --shadow:0 18px 50px rgba(73,48,92,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif;color:var(--ink);background:#ead9ef}
+button,input{font:inherit}
+button{border:0;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid rgba(96,117,255,.55);outline-offset:3px}
+
+#app{position:relative;width:100%;height:100%;overflow:hidden;background:#ecddec}
+.bg-blur{position:absolute;inset:-4%;background:center/cover no-repeat url('assets/room-reference.png');filter:blur(24px) saturate(1.08);transform:scale(1.08);opacity:.55}
+.artboard{position:absolute;top:0;left:50%;height:100dvh;width:auto;min-width:0;transform:translateX(-50%);aspect-ratio:1365/1536;isolation:isolate}
+.artboard img{display:block;width:100%;height:100%;object-fit:fill;user-select:none;-webkit-user-drag:none}
+.art-shade{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(255,235,246,.05),rgba(255,255,255,.02) 42%,rgba(157,109,153,.04));pointer-events:none}
+
+.glow{position:absolute;width:42%;aspect-ratio:1;left:50%;top:36%;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle,rgba(255,223,241,.52),rgba(255,223,241,0) 66%);filter:blur(8px);animation:floatGlow 4.8s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes floatGlow{50%{transform:translate(-50%,-52%) scale(1.03);opacity:.92}}
+
+.hud{position:absolute;inset:0;z-index:8;pointer-events:none}
+.hud > *{pointer-events:auto}
+
+.lock-btn,.music-btn,.password-btn{position:absolute;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);background:rgba(255,245,252,.5);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:0 10px 26px rgba(60,43,76,.16),inset 0 1px rgba(255,255,255,.65);transition:.2s ease}
+.lock-btn:hover,.music-btn:hover,.password-btn:hover{transform:translateY(-2px) scale(1.015);background:rgba(255,247,254,.68)}
+.lock-btn{top:4.6%;left:2.8%;width:62px;height:62px;border-radius:20px}
+.lock-icon{font-size:30px;line-height:1}
+.music-btn{right:2.8%;bottom:3.2%;min-width:54px;height:54px;padding:0 16px;border-radius:20px;gap:8px}
+.music-btn span:last-child{font-size:13px;font-weight:700;white-space:nowrap}
+.password-btn{left:2.8%;bottom:3.2%;height:48px;padding:0 15px;border-radius:18px;gap:8px;display:none;font-size:13px;font-weight:800}
+
+.countdown-card{position:absolute;left:50%;top:15.85%;width:35.1%;transform:translateX(-50%);height:7.7%;min-height:72px;border:1px solid rgba(255,184,215,.75);border-radius:999px;background:rgba(255,242,250,.68);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 12px 35px rgba(102,63,95,.12),inset 0 1px rgba(255,255,255,.7);display:grid;grid-template-columns:repeat(4,1fr);overflow:hidden}
+.cd-cell{display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;gap:2px}
+.cd-cell:not(:last-child)::after{content:"";position:absolute;right:0;top:19%;height:62%;width:1px;background:rgba(90,68,105,.18)}
+.cd-num{font-weight:900;font-size:clamp(22px,2.4vw,38px);line-height:1;color:#2b3a7b;letter-spacing:.02em}
+.cd-label{font-size:clamp(9px,1vw,13px);color:#6a6081;font-weight:700}
+
+.gift-hit{position:absolute;left:30%;top:26%;width:40%;height:38%;border-radius:22px;background:transparent;cursor:pointer;z-index:4}
+.gift-hit:focus-visible{background:rgba(255,255,255,.08)}
+
+.key{position:absolute;left:76%;top:39%;width:66px;height:66px;transform:translate(-50%,-50%);display:none;z-index:12;touch-action:none;cursor:grab;filter:drop-shadow(0 13px 18px rgba(86,45,76,.28));animation:keyFloat 2.2s ease-in-out infinite}
+.key:active{cursor:grabbing;animation:none}
+.key-ring{position:absolute;left:3px;top:9px;width:28px;height:28px;border:7px solid #d9a944;border-radius:50%;background:linear-gradient(#fff0ab,#e4b34f);box-shadow:inset 0 2px rgba(255,255,255,.75)}
+.key-shaft{position:absolute;left:27px;top:22px;width:39px;height:10px;border-radius:8px;background:linear-gradient(180deg,#ffe18a,#b97f23);transform:rotate(-24deg);transform-origin:left center;box-shadow:inset 0 1px rgba(255,255,255,.8)}
+.key-tooth{position:absolute;width:10px;height:15px;background:#c58b28;top:22px;left:53px;transform:rotate(-24deg);border-radius:2px}
+.key-tooth2{position:absolute;width:10px;height:13px;background:#c58b28;top:27px;left:59px;transform:rotate(-24deg);border-radius:2px}
+@keyframes keyFloat{50%{transform:translate(-50%,-55%) rotate(-5deg)}}
+
+.hint{position:absolute;left:50%;top:47.5%;transform:translateX(-50%);padding:9px 14px;border-radius:999px;background:rgba(255,247,252,.78);border:1px solid rgba(255,255,255,.8);box-shadow:0 10px 24px rgba(60,43,76,.14);font-size:12px;font-weight:800;white-space:nowrap;opacity:0;translate:0 8px;transition:.25s;pointer-events:none;z-index:11}
+.hint.show{opacity:1;translate:0 0}
+
+.sparkles{position:absolute;inset:0;z-index:10;pointer-events:none}
+.spark{position:absolute;width:8px;height:8px;border-radius:50%;background:#fff8ff;box-shadow:0 0 14px #fff;opacity:0;animation:spark 1.6s ease-out forwards}
+@keyframes spark{0%{opacity:0;transform:scale(.2)}25%{opacity:1}100%{opacity:0;transform:translateY(-28px) scale(1.8)}}
+
+.toast{position:absolute;left:50%;bottom:5.8%;transform:translateX(-50%) translateY(12px);padding:11px 15px;border-radius:999px;background:rgba(255,248,253,.86);border:1px solid rgba(255,255,255,.88);box-shadow:0 16px 35px rgba(50,37,64,.17);font-size:12px;font-weight:800;opacity:0;transition:.25s;z-index:20;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.modal{position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(32,23,46,.4);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.modal.open{display:flex}
+.panel{width:min(92vw,430px);max-height:min(88vh,720px);overflow:auto;border:1px solid rgba(255,255,255,.78);border-radius:28px;background:linear-gradient(180deg,rgba(255,248,253,.91),rgba(247,226,242,.82));box-shadow:0 35px 90px rgba(34,20,45,.34),inset 0 1px rgba(255,255,255,.85);padding:24px;color:#36406f}
+.panel h2{margin:0 0 7px;font-size:24px}.panel p{margin:0 0 16px;font-size:13px;line-height:1.55;color:#6c6280}.field{display:flex;flex-direction:column;gap:6px;margin:12px 0}.field label{font-size:12px;font-weight:800}.field input{height:46px;padding:0 14px;border-radius:15px;border:1px solid rgba(81,62,105,.16);background:rgba(255,255,255,.65);color:#26305f}.row{display:flex;gap:10px;margin-top:16px}.primary,.secondary{flex:1;height:46px;border-radius:15px;font-weight:900}.primary{background:linear-gradient(180deg,#f9a7cc,#ef77ae);color:white;box-shadow:0 10px 24px rgba(239,119,174,.26)}.secondary{background:rgba(255,255,255,.62);border:1px solid rgba(81,62,105,.12)}
+.close{position:absolute;right:11px;top:11px;width:35px;height:35px;border-radius:50%;background:rgba(255,255,255,.6);font-size:21px}
+
+.viewer{width:min(96vw,900px);height:min(90vh,700px);position:relative;display:grid;place-items:center;border-radius:34px;background:rgba(18,16,27,.68);border:1px solid rgba(255,255,255,.18);box-shadow:0 40px 100px rgba(0,0,0,.35);overflow:hidden}
+.phone{height:min(78vh,610px);aspect-ratio:9/19.5;border-radius:39px;background:linear-gradient(145deg,#23232b,#07070a);padding:9px;box-shadow:0 28px 70px rgba(0,0,0,.45);position:relative;transform:translateY(24px) scale(.94);opacity:0;transition:.45s cubic-bezier(.2,.8,.2,1)}
+.modal.open .phone{transform:translateY(0) scale(1);opacity:1}
+.phone-screen{height:100%;border-radius:32px;overflow:hidden;background:linear-gradient(180deg,#f9dceb,#ffe8f4 38%,#eedbf7);display:flex;flex-direction:column}
+.phone-top{padding:18px 16px 8px;display:flex;justify-content:space-between;font-size:11px;color:#604e77;font-weight:800}.phone-title{padding:10px 18px 2px;font-size:19px;font-weight:900;color:#443e71}.phone-video{margin:12px;border-radius:18px;overflow:hidden;background:#111;box-shadow:inset 0 0 0 1px rgba(255,255,255,.15)}.phone-video video{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}.phone-actions{margin:auto 12px 12px;display:flex;flex-direction:column;gap:8px}.phone-actions button{height:42px;border-radius:13px;font-weight:800;background:rgba(255,255,255,.68);border:1px solid rgba(84,64,105,.12)}.phone-actions .upload{background:linear-gradient(180deg,#f3a4cb,#de7bb4);color:#fff}
+
+.sound-gate{position:absolute;left:50%;bottom:14%;transform:translateX(-50%);padding:9px 14px;border-radius:999px;background:rgba(255,249,253,.74);border:1px solid rgba(255,255,255,.8);font-size:12px;font-weight:900;box-shadow:0 10px 26px rgba(60,43,76,.14);z-index:21;display:none}
+.sound-gate.show{display:block}
+
+@media (max-width:700px){
+  .bg-blur{filter:blur(16px);opacity:.48}
+  .lock-btn{top:max(14px,env(safe-area-inset-top));left:14px;width:54px;height:54px;border-radius:18px}
+  .lock-icon{font-size:26px}
+  .music-btn{right:14px;bottom:max(14px,env(safe-area-inset-bottom));height:50px;border-radius:18px;padding:0 14px}
+  .music-btn span:last-child{display:none}
+  .password-btn{left:14px;bottom:max(14px,env(safe-area-inset-bottom));height:44px}
+  .countdown-card{top:15.9%;width:37%;min-height:62px}
+  .cd-num{font-size:22px}.cd-label{font-size:8px}
+  .gift-hit{top:30%;height:35%;left:34%;width:32%}
+  .key{left:73%;top:39%;width:60px;height:60px}
+  .hint{top:47%}
+  .toast{bottom:11%;max-width:88%;white-space:normal;text-align:center}
+  .sound-gate{bottom:11%}
+}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.art-shade{animation:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="bg-blur" aria-hidden="true"></div>
+  <div class="artboard" id="artboard">
+    <img src="assets/room-reference.png" alt="Cozy birthday gift room" id="sceneImage">
+    <div class="art-shade"></div>
+    <div class="glow" id="giftGlow"></div>
+    <div class="hud">
+      <button class="gift-hit" id="giftHit" aria-label="Gift box"></button>
+      <div class="countdown-card" aria-label="Countdown">
+        <div class="cd-cell"><div class="cd-num" id="days">00</div><div class="cd-label">Days</div></div>
+        <div class="cd-cell"><div class="cd-num" id="hours">00</div><div class="cd-label">Hours</div></div>
+        <div class="cd-cell"><div class="cd-num" id="mins">00</div><div class="cd-label">Minutes</div></div>
+        <div class="cd-cell"><div class="cd-num" id="secs">00</div><div class="cd-label">Seconds</div></div>
+      </div>
+      <button class="lock-btn" id="lockBtn" aria-label="Access lock"><span class="lock-icon" id="lockIcon">🔒</span></button>
+      <button class="password-btn" id="passwordBtn" aria-label="Change access address">🔑 Change access</button>
+      <button class="music-btn" id="musicBtn" aria-label="Toggle music"><span id="musicIcon">♫</span><span>Birthday music</span></button>
+      <div class="key" id="key" role="button" tabindex="0" aria-label="Drag key to lock"><span class="key-ring"></span><span class="key-shaft"></span><span class="key-tooth"></span><span class="key-tooth2"></span></div>
+      <div class="hint" id="hint"></div>
+      <div class="sparkles" id="sparkles"></div>
+      <div class="toast" id="toast"></div>
+      <button class="sound-gate" id="soundGate">Tap to enable sound</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="accessModal" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="accessTitle" style="position:relative">
+    <button class="close" data-close="accessModal" aria-label="Close">×</button>
+    <h2 id="accessTitle">ACCESS LOCK</h2>
+    <p>Enter your access address to unlock the surprise early.</p>
+    <div class="field"><label for="accessInput">Access Address</label><input id="accessInput" autocomplete="off" placeholder="Enter your access address"></div>
+    <div class="row"><button class="secondary" data-close="accessModal">Cancel</button><button class="primary" id="unlockBtn">Unlock</button></div>
+  </div>
+</div>
+
+<div class="modal" id="changeModal" aria-hidden="true">
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="changeTitle" style="position:relative">
+    <button class="close" data-close="changeModal" aria-label="Close">×</button>
+    <h2 id="changeTitle">CHANGE ACCESS ADDRESS</h2>
+    <p>The current address must be verified before saving a new one.</p>
+    <div class="field"><label for="currentAccess">Current Access Address</label><input id="currentAccess" autocomplete="off"></div>
+    <div class="field"><label for="newAccess">New Access Address</label><input id="newAccess" autocomplete="off"></div>
+    <div class="row"><button class="secondary" data-close="changeModal">Cancel</button><button class="primary" id="savePassword">Save Password</button></div>
+  </div>
+</div>
+
+<div class="modal" id="viewerModal" aria-hidden="true">
+  <div class="viewer" role="dialog" aria-modal="true" aria-label="Phone viewer">
+    <button class="close" data-close="viewerModal" aria-label="Close" style="right:12px;top:12px;z-index:3">×</button>
+    <div class="phone">
+      <div class="phone-screen">
+        <div class="phone-top"><span>9:41</span><span>● ●</span></div>
+        <div class="phone-title">A little surprise is waiting ✨</div>
+        <div class="phone-video"><video id="video" controls preload="metadata" playsinline src="assets/birthday-demo.mp4"></video></div>
+        <div class="phone-actions">
+          <button class="upload" id="uploadBtn">Upload Video</button>
+          <input id="videoUpload" type="file" accept="video/*" hidden>
+          <button id="resetVideo">Use Birthday Demo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+  const $ = (s) => document.querySelector(s);
+  const byId = (id) => document.getElementById(id);
+
+  const defaultPassword = '@Aydaaaaaz';
+  const state = {
+    authenticated: false,
+    keyVisible: false,
+    opening: false,
+    opened: false,
+    keyInserted: false,
+    keyRotated: false,
+    soundEnabled: false,
+    drag: false,
+    dragOffsetX: 0,
+    dragOffsetY: 0,
+    videoObjectUrl: null,
+  };
+
+  const els = {
+    artboard: byId('artboard'), days: byId('days'), hours: byId('hours'), mins: byId('mins'), secs: byId('secs'),
+    lockBtn: byId('lockBtn'), lockIcon: byId('lockIcon'), passwordBtn: byId('passwordBtn'), key: byId('key'),
+    giftHit: byId('giftHit'), hint: byId('hint'), toast: byId('toast'), sparkles: byId('sparkles'), giftGlow: byId('giftGlow'),
+    accessModal: byId('accessModal'), accessInput: byId('accessInput'), unlockBtn: byId('unlockBtn'),
+    changeModal: byId('changeModal'), currentAccess: byId('currentAccess'), newAccess: byId('newAccess'), savePassword: byId('savePassword'),
+    viewerModal: byId('viewerModal'), uploadBtn: byId('uploadBtn'), videoUpload: byId('videoUpload'), video: byId('video'), resetVideo: byId('resetVideo'),
+    musicBtn: byId('musicBtn'), musicIcon: byId('musicIcon'), soundGate: byId('soundGate')
+  };
+
+  const stored = localStorage.getItem('birthdayAccess');
+  let accessAddress = stored || defaultPassword;
+  let audioCtx = null;
+  let masterGain = null;
+  let musicTimer = null;
+  let noteIndex = 0;
+
+  function openModal(modal){ modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); setTimeout(()=>modal.querySelector('input,button')?.focus(),20); }
+  function closeModal(modal){ modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+  document.querySelectorAll('[data-close]').forEach(b => b.addEventListener('click',()=>closeModal(byId(b.dataset.close))));
+  document.querySelectorAll('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)closeModal(m)}));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(closeModal)});
+
+  function toast(message){
+    els.toast.textContent = message; els.toast.classList.add('show');
+    clearTimeout(toast._t); toast._t = setTimeout(()=>els.toast.classList.remove('show'),2300);
+  }
+  function hint(message,show=true){
+    els.hint.textContent=message; els.hint.classList.toggle('show',show);
+  }
+  function sparkleBurst(count=18){
+    els.sparkles.replaceChildren();
+    for(let i=0;i<count;i++){
+      const s=document.createElement('span'); s.className='spark'; s.style.left=(45+Math.random()*10)+'%'; s.style.top=(34+Math.random()*24)+'%'; s.style.animationDelay=(Math.random()*0.3)+'s'; els.sparkles.appendChild(s);
+    }
+    setTimeout(()=>els.sparkles.replaceChildren(),1900);
+  }
+
+  function getNow(){ return new Date(); }
+  function nextOct1(now){
+    const year=now.getFullYear();
+    const thisOct=new Date(year,9,1,0,0,0,0);
+    const windowEnd=new Date(year,9,4,0,0,0,0);
+    if(now < thisOct) return thisOct;
+    if(now < windowEnd) return null;
+    return new Date(year+1,9,1,0,0,0,0);
+  }
+  function tick(){
+    if(state.authenticated){
+      els.days.textContent='00'; els.hours.textContent='00'; els.mins.textContent='00'; els.secs.textContent='00';
+      return;
+    }
+    const now=getNow(), start=new Date(now.getFullYear(),9,1,0,0,0,0), end=new Date(now.getFullYear(),9,4,0,0,0,0);
+    if(now>=start && now<end){
+      els.days.textContent='00'; els.hours.textContent='00'; els.mins.textContent='00'; els.secs.textContent='00';
+      if(!state.keyVisible) makeKeyVisible();
+      return;
+    }
+    const target=nextOct1(now); const diff=Math.max(0,target.getTime()-now.getTime());
+    const d=Math.floor(diff/86400000); const h=Math.floor(diff/3600000)%24; const m=Math.floor(diff/60000)%60; const s=Math.floor(diff/1000)%60;
+    els.days.textContent=String(d).padStart(2,'0'); els.hours.textContent=String(h).padStart(2,'0'); els.mins.textContent=String(m).padStart(2,'0'); els.secs.textContent=String(s).padStart(2,'0');
+  }
+  setInterval(tick,250); tick();
+
+  function isUnlockWindow(){ const now=getNow(); const s=new Date(now.getFullYear(),9,1); const e=new Date(now.getFullYear(),9,4); return now>=s && now<e; }
+  function makeKeyVisible(){
+    if(state.opened || state.keyVisible) return;
+    state.keyVisible=true; els.key.style.display='block'; els.giftGlow.style.opacity='.95';
+    hint('Drag me to the lock'); sparkleBurst(12);
+    startSound('key');
+  }
+  function hideKey(){ state.keyVisible=false; els.key.style.display='none'; hint('',false); }
+
+  els.lockBtn.addEventListener('click',()=>{
+    if(state.authenticated){
+      state.authenticated=false; state.keyInserted=false; state.keyRotated=false; state.opened=false; hideKey(); els.passwordBtn.style.display='none'; els.lockIcon.textContent='🔒'; tick(); toast('Access locked again.');
+    } else openModal(els.accessModal);
+  });
+  els.passwordBtn.addEventListener('click',()=>openModal(els.changeModal));
+
+  function authenticate(){
+    if(els.accessInput.value===accessAddress){
+      state.authenticated=true; els.lockIcon.textContent='🔓'; els.passwordBtn.style.display='flex'; makeKeyVisible(); closeModal(els.accessModal); toast('Access granted.');
+    } else toast('Incorrect access address. Please try again.');
+  }
+  els.unlockBtn.addEventListener('click',authenticate);
+  els.accessInput.addEventListener('keydown',e=>{if(e.key==='Enter')authenticate()});
+  els.savePassword.addEventListener('click',()=>{
+    if(els.currentAccess.value!==accessAddress){toast('Current access address is incorrect.');return}
+    if(!els.newAccess.value.trim()){toast('New access address cannot be empty.');return}
+    accessAddress=els.newAccess.value.trim(); localStorage.setItem('birthdayAccess',accessAddress); closeModal(els.changeModal); els.currentAccess.value=''; els.newAccess.value=''; toast('Access address saved locally.');
+  });
+
+  // Drag key with Pointer Events; works with mouse and touch.
+  function pointerPos(ev){ const r=els.artboard.getBoundingClientRect(); return {x:ev.clientX-r.left,y:ev.clientY-r.top,r}; }
+  function setKeyAt(x,y){ els.key.style.left=(x/els.artboard.clientWidth*100)+'%'; els.key.style.top=(y/els.artboard.clientHeight*100)+'%'; }
+  function lockCenter(){ return {x:els.artboard.clientWidth*.5,y:els.artboard.clientHeight*.48}; }
+  els.key.addEventListener('pointerdown',ev=>{
+    if(!state.keyVisible) return;
+    state.drag=true; els.key.setPointerCapture?.(ev.pointerId); els.key.style.animation='none';
+    const p=pointerPos(ev); const kr=els.key.getBoundingClientRect(); state.dragOffsetX=p.x-(kr.left-p.r.left+kr.width/2); state.dragOffsetY=p.y-(kr.top-p.r.top+kr.height/2);
+    hint('Insert key');
+  });
+  els.key.addEventListener('pointermove',ev=>{
+    if(!state.drag) return; const p=pointerPos(ev); setKeyAt(p.x-state.dragOffsetX,p.y-state.dragOffsetY);
+    const c=lockCenter(); const dx=(p.x-c.x),dy=(p.y-c.y); const near=Math.hypot(dx,dy)<els.artboard.clientWidth*.09; if(near){hint('Release to insert'); els.key.style.transform='translate(-50%,-50%) scale(1.06)';} else els.key.style.transform='translate(-50%,-50%)';
+  });
+  function endDrag(ev){
+    if(!state.drag) return; state.drag=false; try{els.key.releasePointerCapture?.(ev.pointerId)}catch{}
+    const p=pointerPos(ev), c=lockCenter(); const near=Math.hypot(p.x-c.x,p.y-c.y)<els.artboard.clientWidth*.11;
+    els.key.style.transform='translate(-50%,-50%)';
+    if(near){ setKeyAt(c.x,c.y); state.keyInserted=true; hint('Rotate the key'); startSound('insert'); }
+    else { hint('Drag me to the lock'); setKeyAt(els.artboard.clientWidth*.76,els.artboard.clientHeight*.39); els.key.style.animation='keyFloat 2.2s ease-in-out infinite'; }
+  }
+  els.key.addEventListener('pointerup',endDrag); els.key.addEventListener('pointercancel',endDrag);
+  els.key.addEventListener('keydown',e=>{if(e.key==='Enter'&&state.keyVisible){state.keyInserted=true;hint('Rotate the key')}});
+
+  let rotateStart=null;
+  els.key.addEventListener('dblclick',()=>{ if(state.keyInserted){ state.keyRotated=true; unlockBox(); }});
+  els.key.addEventListener('pointerdown',ev=>{ if(state.keyInserted){rotateStart=ev.clientY; els.key.setPointerCapture?.(ev.pointerId)} });
+  els.key.addEventListener('pointermove',ev=>{ if(state.keyInserted && rotateStart!==null){ const delta=rotateStart-ev.clientY; if(Math.abs(delta)>36){state.keyRotated=true; rotateStart=null; unlockBox();} } });
+  els.key.addEventListener('pointerup',()=>rotateStart=null);
+
+  els.giftHit.addEventListener('click',()=>{
+    if(state.opened){openViewer();return}
+    if(state.keyInserted && state.keyRotated){unlockBox();return}
+    if(state.keyVisible){ hint(state.keyInserted?'Rotate the key':'Drag me to the lock'); }
+    else hint('Locked until October 1');
+    setTimeout(()=>hint('',false),1900);
+  });
+
+  function unlockBox(){
+    if(state.opened || !state.keyInserted) return;
+    state.opening=true; hint('',false); sparkleBurst(28); startSound('unlock'); toast('The lock opens...');
+    els.giftGlow.animate([{transform:'translate(-50%,-50%) scale(1)'},{transform:'translate(-50%,-50%) scale(1.35)'},{transform:'translate(-50%,-50%) scale(1)'}],{duration:1200,easing:'cubic-bezier(.2,.8,.2,1)'});
+    setTimeout(()=>{
+      state.opening=false; state.opened=true; els.key.style.display='none'; toast('Tap the gift to explore the surprise.');
+    },1150);
+  }
+
+  function openViewer(){ if(!state.opened)return; openModal(els.viewerModal); startSound('reveal'); }
+  els.uploadBtn.addEventListener('click',()=>{
+    if(!state.authenticated){toast('Video upload is available after password unlock.');return}
+    els.videoUpload.click();
+  });
+  els.videoUpload.addEventListener('change',()=>{
+    const file=els.videoUpload.files?.[0]; if(!file)return;
+    if(!file.type.startsWith('video/')){toast('Please choose a video file.');return}
+    if(file.size>80*1024*1024){toast('Video is too large. Maximum size is 80 MB.');return}
+    if(state.videoObjectUrl) URL.revokeObjectURL(state.videoObjectUrl);
+    state.videoObjectUrl=URL.createObjectURL(file); els.video.src=state.videoObjectUrl; els.video.load(); toast('Video loaded for this browser session.');
+  });
+  els.resetVideo.addEventListener('click',()=>{if(state.videoObjectUrl){URL.revokeObjectURL(state.videoObjectUrl);state.videoObjectUrl=null} els.video.src='assets/birthday-demo.mp4'; els.video.load(); toast('Birthday demo restored.');});
+
+  // Simple original WebAudio music/effects; no copyrighted recording used.
+  function ensureAudio(){
+    if(!audioCtx){audioCtx=new (window.AudioContext||window.webkitAudioContext)();masterGain=audioCtx.createGain();masterGain.gain.value=.08;masterGain.connect(audioCtx.destination)}
+    if(audioCtx.state==='suspended')audioCtx.resume();
+  }
+  function tone(freq,dur,type='sine',gain=.08){
+    ensureAudio(); const o=audioCtx.createOscillator(), g=audioCtx.createGain(); o.type=type;o.frequency.value=freq;g.gain.setValueAtTime(0,audioCtx.currentTime);g.gain.linearRampToValueAtTime(gain,audioCtx.currentTime+.02);g.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+dur);o.connect(g).connect(masterGain);o.start();o.stop(audioCtx.currentTime+dur+.03);
+  }
+  function startSound(kind){
+    try{ if(kind==='key'){tone(880,.14,'triangle',.05);tone(1175,.22,'sine',.035)}
+      if(kind==='insert'){tone(220,.16,'square',.035);setTimeout(()=>tone(330,.16,'square',.03),90)}
+      if(kind==='unlock'){tone(392,.18,'sine',.04);setTimeout(()=>tone(523,.25,'sine',.05),100);setTimeout(()=>tone(659,.35,'sine',.035),210)}
+      if(kind==='reveal'){tone(659,.18,'triangle',.04);setTimeout(()=>tone(784,.22,'triangle',.04),90);setTimeout(()=>tone(988,.3,'triangle',.035),180)}
+    }catch{}
+  }
+  function musicLoop(){
+    if(!state.soundEnabled)return; const notes=[261.63,329.63,392,523.25,392,329.63,293.66,349.23]; tone(notes[noteIndex%notes.length],.62,'sine',.02); noteIndex++; musicTimer=setTimeout(musicLoop,650);
+  }
+  function toggleMusic(){
+    ensureAudio(); state.soundEnabled=!state.soundEnabled;
+    if(state.soundEnabled){els.musicIcon.textContent='❚❚';els.soundGate.classList.remove('show');clearTimeout(musicTimer);musicLoop();toast('Sound enabled.');}
+    else{els.musicIcon.textContent='♫';clearTimeout(musicTimer);toast('Sound muted.');}
+  }
+  els.musicBtn.addEventListener('click',toggleMusic);
+  els.soundGate.addEventListener('click',toggleMusic);
+  setTimeout(()=>{if(!state.soundEnabled)els.soundGate.classList.add('show')},1200);
+
+  // First interaction enables sound without forcing autoplay.
+  document.addEventListener('pointerdown',()=>{ if(!state.soundEnabled && !els.accessModal.classList.contains('open')) { /* no forced playback */ } },{once:true,passive:true});
+
+  // On October 1, the key appears automatically. Re-evaluate after sleep/wake and refresh.
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)tick()});
+  window.addEventListener('focus',tick);
+  window.addEventListener('resize',()=>{if(state.keyVisible && !state.drag && !state.keyInserted)setKeyAt(els.artboard.clientWidth*.76,els.artboard.clientHeight*.39)});
+
+  // Prevent accidental text selection while dragging.
+  document.addEventListener('selectstart',e=>{if(state.drag)e.preventDefault()});
+})();
+</script>
+</body>
+</html>
